@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Convertisseur CSV vers data.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-900 text-white font-sans min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-800 rounded-2xl shadow-xl p-6 border border-slate-700 text-center space-y-4">
+        <h1 class="text-xl font-bold text-indigo-400">Générateur de data.js</h1>
+        <p class="text-sm text-slate-400">Sélectionnez votre fichier CSV pour obtenir le fichier JS du Quiz.</p>
+        
+        <input type="file" id="csvFile" accept=".csv" class="hidden">
+        <label for="csvFile" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl cursor-pointer transition">
+            Choisir le fichier CSV
+        </label>
+        
+        <div id="status" class="text-sm text-emerald-400 font-medium hidden">✓ Fichier converti et téléchargé !</div>
+    </div>
+
+    <script>
+        document.getElementById('csvFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const text = evt.target.result;
+                const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
+                
+                if (lines.length < 2) {
+                    alert("Le fichier CSV semble vide ou invalide.");
+                    return;
+                }
+
+                // Détection automatique du séparateur (, ou ;)
+                const separator = lines[0].includes(';') ? ';' : ',';
+                
+                // Nettoyage des entêtes (enlève les guillemets et espaces)
+                const headers = lines[0].split(separator).map(h => h.trim().replace(/["']/g, "").toLowerCase());
+
+                const result = [];
+                for (let i = 1; i < lines.length; i++) {
+                    // Gestion basique du split (attention aux virgules dans les titres, privilégiez le point-virgule au besoin)
+                    const currentLine = lines[i].split(separator).map(v => v.trim().replace(/["']/g, ""));
+                    
+                    if (currentLine.length < headers.length) continue;
+
+                    const obj = {};
+                    headers.forEach((header, index) => {
+                        obj[header] = currentLine[index];
+                    });
+                    result.push(obj);
+                }
+
+                // Génération du contenu du fichier data.js
+                const jsContent = `const playlistData = ${JSON.stringify(result, null, 2)};`;
+                
+                // Déclenchement du téléchargement automatique
+                const blob = new Blob([jsContent], { type: 'application/javascript;charset=utf-8;' });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "data.js";
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                document.getElementById('status').classList.remove('hidden');
+            };
+            reader.readAsText(file, 'UTF-8');
+        });
+    </script>
+</body>
+</html>

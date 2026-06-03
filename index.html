@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Quiz Musical Secret</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-900 text-white font-sans min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="max-w-md w-full bg-slate-800 rounded-2xl shadow-xl p-6 border border-slate-700">
+        
+        <div id="end-screen" class="hidden text-center space-y-5">
+            <h2 class="text-3xl font-bold text-emerald-400">Quiz Terminé ! 🥳</h2>
+            
+            <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50 space-y-2">
+                <p class="text-lg text-slate-300">Votre score final :</p>
+                <p class="font-bold text-yellow-400 text-4xl"><span id="final-score">0</span> <span class="text-2xl">pts</span></p>
+            </div>
+
+            <p class="text-sm text-slate-400">
+                Vous avez répondu à <span id="final-answered" class="font-semibold text-white">0</span> chanson(s) sur un total de <span id="total-playlist" class="text-white">0</span>.
+            </p>
+
+            <button onclick="location.reload()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-xl transition w-full cursor-pointer shadow-lg shadow-emerald-600/20">
+                Recommencer une partie
+            </button>
+        </div>
+
+        <div id="quiz-screen" class="space-y-6">
+            <div class="flex justify-between items-center text-sm text-slate-400">
+                <span id="progress">Chanson 1 / X</span>
+                <span class="bg-slate-700 px-3 py-1 rounded-full text-yellow-400 font-bold">Score : <span id="score">0</span> pts</span>
+            </div>
+
+            <div class="text-center py-4 border-b border-slate-700">
+                <span id="origine-badge" class="inline-block bg-indigo-500/20 text-indigo-300 text-xs font-semibold px-2.5 py-1 rounded-md mb-2">Origine</span>
+                <h1 id="song-title" class="text-xl font-extrabold tracking-tight text-white px-2 italic">Chargement...</h1>
+                <h2 id="song-artist" class="text-xl tracking-tight text-white px-2 italic">Chargement...</h2>
+                <div class="mt-3">
+                    <a id="song-link" href="#" target="_blank" rel="noopener noreferrer" 
+                       class="inline-flex items-center gap-2 text-sm text-rose-400 hover:text-rose-300 transition-colors font-medium">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                        Écouter ou voir le clip
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-400 mb-2">1. Quel est le type de cette chanson ?</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="selectType('Préférée', this)" class="type-btn border border-slate-600 bg-slate-700/50 hover:bg-slate-700 p-3 rounded-xl font-medium transition-all duration-200 text-white cursor-pointer">🌟 Préférée</button>
+                    <button onclick="selectType('Coupable', this)" class="type-btn border border-slate-600 bg-slate-700/50 hover:bg-slate-700 p-3 rounded-xl font-medium transition-all duration-200 text-white cursor-pointer">🙈 Coupable</button>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-400 mb-2">2. Qui a donné cette chanson ?</label>
+                <select id="suspect-select" class="w-full bg-slate-700 border border-slate-600 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                    </select>
+            </div>
+
+            <div class="space-y-3 pt-2">
+                <button id="submit-btn" onclick="validateAnswer()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition shadow-lg shadow-indigo-600/30 cursor-pointer">
+                    Valider ma réponse
+                </button>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="skipSong()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium py-2 px-3 rounded-xl transition text-sm cursor-pointer">
+                        ⏭️ Passer
+                    </button>
+                    <button onclick="showEndScreen()" class="bg-rose-950/30 hover:bg-rose-950/60 text-rose-400 border border-rose-900/40 font-medium py-2 px-3 rounded-xl transition text-sm cursor-pointer">
+                        🏁 Terminer
+                    </button>
+                </div>
+            </div>
+
+            <div id="feedback" class="hidden text-center p-3 rounded-xl font-semibold"></div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        let currentIndex = 0;
+        let score = 0;
+        let selectedType = null;
+        let answeredCount = 0; // Compteur des chansons réellement répondues
+        let timeoutId = null;  // Pour pouvoir annuler la transition si on clique sur "Passer"
+
+        // Éléments DOM
+        const songTitle = document.getElementById('song-title');
+		const songArtist = document.getElementById('song-artist');
+		const songLink = document.getElementById('song-link');
+        const origineBadge = document.getElementById('origine-badge');
+        const progress = document.getElementById('progress');
+        const scoreDisplay = document.getElementById('score');
+        const suspectSelect = document.getElementById('suspect-select');
+        const feedback = document.getElementById('feedback');
+        const submitBtn = document.getElementById('submit-btn');
+
+        // Algorithme de mélange parfait (Fisher-Yates)
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function loadQuestion() {
+            // Nettoyage d'un éventuel timeout en cours
+            if (timeoutId) clearTimeout(timeoutId);
+
+            if (currentIndex >= playlistData.length) {
+                showEndScreen();
+                return;
+            }
+
+            const currentSong = playlistData[currentIndex];
+            
+            // Reset visuel des boutons de type
+            selectedType = null;
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.classList.remove(
+                    'bg-amber-500', 'text-slate-900', 'border-amber-300', 'shadow-amber-500/30',
+                    'bg-rose-600', 'border-rose-400', 'shadow-rose-600/30',
+                    'scale-105', 'shadow-xl'
+                );
+                btn.classList.add('text-white');
+            });
+            
+            feedback.classList.add('hidden');
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Valider ma réponse";
+
+            // Injection des textes
+            songTitle.innerText = `${currentSong.chanson}`;
+			songArtist.innerText = `(${currentSong.artiste})`;
+            origineBadge.innerText = `Groupe : ${currentSong.groupe}`;
+            progress.innerText = `Chanson ${currentIndex + 1} / ${playlistData.length}`;
+
+            // Gestion du lien YouTube
+            if (currentSong.lien && currentSong.lien.startsWith('http')) {
+                songLink.href = currentSong.lien;
+                songLink.parentElement.classList.remove('hidden');
+            } else {
+                songLink.parentElement.classList.add('hidden');
+            }
+
+            // Filtrage des suspects basé sur le champ 'participant'
+            let suspects = playlistData
+                .filter(song => song.groupe === currentSong.groupe)
+                .map(song => song.participant);
+            
+            suspects = [...new Set(suspects)]; // Suppression des doublons
+            
+            suspects.sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' })); // Tri de la liste par ordre alphabétique (gère aussi les accents français)
+
+            // Remplissage du select HTML
+            suspectSelect.innerHTML = '<option value="" disabled selected>-- Choisis le participant --</option>';
+            suspects.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.innerText = name;
+                suspectSelect.appendChild(option);
+            });
+        }
+
+        function selectType(type, element) {
+            selectedType = type;
+            
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.classList.remove(
+                    'bg-amber-500', 'text-slate-900', 'border-amber-300', 'shadow-amber-500/30',
+                    'bg-rose-600', 'border-rose-400', 'shadow-rose-600/30',
+                    'scale-105', 'shadow-xl'
+                );
+                btn.classList.add('text-white');
+            });
+
+            if (type === 'Préférée') {
+                element.classList.add('bg-amber-500', 'text-slate-900', 'border-amber-300', 'scale-105', 'shadow-xl', 'shadow-amber-500/30');
+            } else if (type === 'Coupable') {
+                element.classList.add('bg-rose-600', 'border-rose-400', 'scale-105', 'shadow-xl', 'shadow-rose-600/30');
+            }
+        }
+
+        function validateAnswer() {
+            const currentSong = playlistData[currentIndex];
+            const chosenSuspect = suspectSelect.value;
+
+            if (!selectedType || !chosenSuspect) {
+                alert("Il faut répondre aux deux questions !");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            answeredCount++; // Une réponse valide vient d'être soumise !
+            
+            let pointsGagnes = 0;
+            let message = "";
+
+            const typeCorrect = (selectedType === currentSong.type);
+            const nomCorrect = (chosenSuspect === currentSong.participant);
+
+            if (typeCorrect && nomCorrect) {
+                pointsGagnes = 3;
+                message = `🎉 Parfait ! (+3 pts)<br>C'est bien un choix "${currentSong.type}" de ${currentSong.participant}.`;
+                feedback.className = "p-3 rounded-xl font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+            } else if (!typeCorrect && !nomCorrect) {
+                message = `❌ Tout faux...<br>C'était un choix "${currentSong.type}" proposé par ${currentSong.participant}.`;
+                feedback.className = "p-3 rounded-xl font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+            } else {
+                pointsGagnes = typeCorrect ? 1 : 2;
+                message = `⚠️ Moitié juste ! (+${pointsGagnes} pt${pointsGagnes > 1 ? 's' : ''})<br>C'était un choix "${currentSong.type}" de ${currentSong.participant}.`;
+                feedback.className = "p-3 rounded-xl font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30";
+            }
+
+            score += pointsGagnes;
+            scoreDisplay.innerText = score;
+            feedback.innerHTML = message;
+            feedback.classList.remove('hidden');
+
+            // Passage automatique à la suite après 3,5 secondes
+            timeoutId = setTimeout(() => {
+                currentIndex++;
+                loadQuestion();
+            }, 3500);
+        }
+
+        // Fonction pour sauter la chanson en cours
+        function skipSong() {
+            currentIndex++;
+            loadQuestion();
+        }
+
+        // Fonction pour afficher l'écran final de synthèse
+        function showEndScreen() {
+            if (timeoutId) clearTimeout(timeoutId);
+            
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('end-screen').classList.remove('hidden');
+            
+            // Mise à jour de la synthèse
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('final-answered').innerText = answeredCount;
+            document.getElementById('total-playlist').innerText = playlistData.length;
+        }
+
+        // Au chargement : On mélange toute la playlist et on commence
+        window.onload = function() {
+            shuffle(playlistData);
+            loadQuestion();
+        };
+    </script>
+</body>
+</html>

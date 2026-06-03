@@ -10,6 +10,32 @@
 
     <div class="max-w-md w-full bg-slate-800 rounded-2xl shadow-xl p-6 border border-slate-700">
         
+        <div id="start-screen" class="space-y-5">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold text-indigo-400">Configuration du Quiz</h2>
+                <p class="text-sm text-slate-400 mt-2">Quels groupes voulez-vous inclure ?</p>
+            </div>
+            
+            <div class="flex flex-col gap-3">
+                <label class="flex items-center space-x-3 bg-slate-700/50 p-3 rounded-xl cursor-pointer hover:bg-slate-700 transition">
+                    <input type="checkbox" value="Famille" class="group-cb w-5 h-5 accent-indigo-500" checked>
+                    <span class="text-white font-medium">Famille</span>
+                </label>
+                <label class="flex items-center space-x-3 bg-slate-700/50 p-3 rounded-xl cursor-pointer hover:bg-slate-700 transition">
+                    <input type="checkbox" value="Boulot" class="group-cb w-5 h-5 accent-indigo-500" checked>
+                    <span class="text-white font-medium">Boulot</span>
+                </label>
+                <label class="flex items-center space-x-3 bg-slate-700/50 p-3 rounded-xl cursor-pointer hover:bg-slate-700 transition">
+                    <input type="checkbox" value="Volley" class="group-cb w-5 h-5 accent-indigo-500" checked>
+                    <span class="text-white font-medium">Volley</span>
+                </label>
+            </div>
+
+            <button id="start-btn" onclick="startGame()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition shadow-lg shadow-indigo-600/30 cursor-pointer mt-4">
+                🚀 Lancer la partie
+            </button>
+        </div>
+
         <div id="end-screen" class="hidden text-center space-y-5">
             <h2 class="text-3xl font-bold text-emerald-400">Quiz Terminé ! 🥳</h2>
             
@@ -27,7 +53,7 @@
             </button>
         </div>
 
-        <div id="quiz-screen" class="space-y-6">
+        <div id="quiz-screen" class="hidden space-y-6">
             <div class="flex justify-between items-center text-sm text-slate-400">
                 <span id="progress">Chanson 1 / X</span>
                 <span class="bg-slate-700 px-3 py-1 rounded-full text-yellow-400 font-bold">Score : <span id="score">0</span> pts</span>
@@ -57,17 +83,19 @@
             <div>
                 <label class="block text-sm font-medium text-slate-400 mb-2">2. Qui a donné cette chanson ?</label>
                 <select id="suspect-select" class="w-full bg-slate-700 border border-slate-600 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
-                    </select>
+                </select>
             </div>
 
-            <div class="space-y-3 pt-2">
+            <div id="feedback" class="hidden text-center p-3 rounded-xl font-semibold"></div>
+
+            <div id="action-buttons" class="space-y-3 pt-2">
                 <button id="submit-btn" onclick="validateAnswer()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition shadow-lg shadow-indigo-600/30 cursor-pointer">
                     Valider ma réponse
                 </button>
 
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="skipSong()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium py-2 px-3 rounded-xl transition text-sm cursor-pointer">
-                        ⏭️ Passer
+                        ⏭️ Passer (À plus tard)
                     </button>
                     <button onclick="showEndScreen()" class="bg-rose-950/30 hover:bg-rose-950/60 text-rose-400 border border-rose-900/40 font-medium py-2 px-3 rounded-xl transition text-sm cursor-pointer">
                         🏁 Terminer
@@ -75,28 +103,37 @@
                 </div>
             </div>
 
-            <div id="feedback" class="hidden text-center p-3 rounded-xl font-semibold"></div>
+            <div id="next-buttons" class="hidden space-y-3 pt-2">
+                <button onclick="nextSong()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition shadow-lg shadow-emerald-600/30 cursor-pointer">
+                    Chanson Suivante ➡️
+                </button>
+                <button onclick="showEndScreen()" class="w-full bg-rose-950/30 hover:bg-rose-950/60 text-rose-400 border border-rose-900/40 font-medium py-2 px-3 rounded-xl transition text-sm cursor-pointer">
+                    🏁 Terminer le Quiz
+                </button>
+            </div>
+
         </div>
     </div>
 
     <script src="./data.js"></script>
     <script>
+        let currentPlaylist = []; // Remplace l'utilisation directe de playlistData
         let currentIndex = 0;
         let score = 0;
         let selectedType = null;
-        let answeredCount = 0; // Compteur des chansons réellement répondues
-        let timeoutId = null;  // Pour pouvoir annuler la transition si on clique sur "Passer"
+        let answeredCount = 0;
 
         // Éléments DOM
         const songTitle = document.getElementById('song-title');
-		const songArtist = document.getElementById('song-artist');
-		const songLink = document.getElementById('song-link');
+        const songArtist = document.getElementById('song-artist');
+        const songLink = document.getElementById('song-link');
         const origineBadge = document.getElementById('origine-badge');
         const progress = document.getElementById('progress');
         const scoreDisplay = document.getElementById('score');
         const suspectSelect = document.getElementById('suspect-select');
         const feedback = document.getElementById('feedback');
-        const submitBtn = document.getElementById('submit-btn');
+        const actionButtons = document.getElementById('action-buttons');
+        const nextButtons = document.getElementById('next-buttons');
 
         // Algorithme de mélange parfait (Fisher-Yates)
         function shuffle(array) {
@@ -106,16 +143,42 @@
             }
         }
 
-        function loadQuestion() {
-            // Nettoyage d'un éventuel timeout en cours
-            if (timeoutId) clearTimeout(timeoutId);
+        // --- NOUVEAU : Fonction de démarrage ---
+        function startGame() {
+            const checkboxes = document.querySelectorAll('.group-cb');
+            const selectedGroups = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
 
-            if (currentIndex >= playlistData.length) {
+            if (selectedGroups.length === 0) {
+                alert("Il faut sélectionner au moins un groupe pour jouer !");
+                return;
+            }
+
+            // Désactiver l'interface
+            checkboxes.forEach(cb => cb.disabled = true);
+            const startBtn = document.getElementById('start-btn');
+            startBtn.disabled = true;
+            startBtn.innerText = "Chargement...";
+
+            // Filtrer la base de données selon les groupes sélectionnés
+            currentPlaylist = playlistData.filter(song => selectedGroups.includes(song.groupe));
+            
+            // Mélanger cette nouvelle liste
+            shuffle(currentPlaylist);
+
+            // Basculer l'affichage
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentIndex >= currentPlaylist.length) {
                 showEndScreen();
                 return;
             }
 
-            const currentSong = playlistData[currentIndex];
+            const currentSong = currentPlaylist[currentIndex];
             
             // Reset visuel des boutons de type
             selectedType = null;
@@ -128,15 +191,16 @@
                 btn.classList.add('text-white');
             });
             
+            // Reset de l'interface des boutons d'action
             feedback.classList.add('hidden');
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Valider ma réponse";
-
+            actionButtons.classList.remove('hidden');
+            nextButtons.classList.add('hidden');
+            
             // Injection des textes
             songTitle.innerText = `${currentSong.chanson}`;
-			songArtist.innerText = `(${currentSong.artiste})`;
+            songArtist.innerText = `(${currentSong.artiste})`;
             origineBadge.innerText = `Groupe : ${currentSong.groupe}`;
-            progress.innerText = `Chanson ${currentIndex + 1} / ${playlistData.length}`;
+            progress.innerText = `Chanson ${currentIndex + 1} / ${currentPlaylist.length}`;
 
             // Gestion du lien YouTube
             if (currentSong.lien && currentSong.lien.startsWith('http')) {
@@ -146,14 +210,13 @@
                 songLink.parentElement.classList.add('hidden');
             }
 
-            // Filtrage des suspects basé sur le champ 'participant'
+            // Filtrage des suspects basé sur le groupe en cours
             let suspects = playlistData
                 .filter(song => song.groupe === currentSong.groupe)
                 .map(song => song.participant);
             
-            suspects = [...new Set(suspects)]; // Suppression des doublons
-            
-            suspects.sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' })); // Tri de la liste par ordre alphabétique (gère aussi les accents français)
+            suspects = [...new Set(suspects)];
+            suspects.sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
 
             // Remplissage du select HTML
             suspectSelect.innerHTML = '<option value="" disabled selected>-- Choisis le participant --</option>';
@@ -185,7 +248,7 @@
         }
 
         function validateAnswer() {
-            const currentSong = playlistData[currentIndex];
+            const currentSong = currentPlaylist[currentIndex];
             const chosenSuspect = suspectSelect.value;
 
             if (!selectedType || !chosenSuspect) {
@@ -193,8 +256,7 @@
                 return;
             }
 
-            submitBtn.disabled = true;
-            answeredCount++; // Une réponse valide vient d'être soumise !
+            answeredCount++;
             
             let pointsGagnes = 0;
             let message = "";
@@ -205,51 +267,54 @@
             if (typeCorrect && nomCorrect) {
                 pointsGagnes = 3;
                 message = `🎉 Parfait ! (+3 pts)<br>C'est bien un choix "${currentSong.type}" de ${currentSong.participant}.`;
-                feedback.className = "p-3 rounded-xl font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                feedback.className = "p-3 rounded-xl font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 mt-4";
             } else if (!typeCorrect && !nomCorrect) {
                 message = `❌ Tout faux...<br>C'était un choix "${currentSong.type}" proposé par ${currentSong.participant}.`;
-                feedback.className = "p-3 rounded-xl font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+                feedback.className = "p-3 rounded-xl font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30 mt-4";
             } else {
                 pointsGagnes = typeCorrect ? 1 : 2;
                 message = `⚠️ Moitié juste ! (+${pointsGagnes} pt${pointsGagnes > 1 ? 's' : ''})<br>C'était un choix "${currentSong.type}" de ${currentSong.participant}.`;
-                feedback.className = "p-3 rounded-xl font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30";
+                feedback.className = "p-3 rounded-xl font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30 mt-4";
             }
 
             score += pointsGagnes;
             scoreDisplay.innerText = score;
             feedback.innerHTML = message;
+            
+            // Affichage de la réponse et masquage des actions
             feedback.classList.remove('hidden');
-
-            // Passage automatique à la suite après 3,5 secondes
-            timeoutId = setTimeout(() => {
-                currentIndex++;
-                loadQuestion();
-            }, 3500);
+            actionButtons.classList.add('hidden');
+            nextButtons.classList.remove('hidden');
         }
 
-        // Fonction pour sauter la chanson en cours
-        function skipSong() {
+        // --- NOUVEAU : Fonction pour passer à la suivante après lecture du feedback ---
+        function nextSong() {
             currentIndex++;
             loadQuestion();
         }
 
-        // Fonction pour afficher l'écran final de synthèse
+        // --- MODIFIÉ : Fonction pour sauter la chanson et la remettre à la fin ---
+        function skipSong() {
+            // On récupère la chanson en cours et on la retire du tableau (avec splice)
+			const currentSong = currentPlaylist.splice(currentIndex, 1)[0];
+            // On ajoute la chanson actuelle à la toute fin de la liste
+            currentPlaylist.push(currentSong);
+            // On recharge l'affichage sans incémenter la chanson
+            loadQuestion();
+        }
+
         function showEndScreen() {
-            if (timeoutId) clearTimeout(timeoutId);
-            
             document.getElementById('quiz-screen').classList.add('hidden');
             document.getElementById('end-screen').classList.remove('hidden');
             
-            // Mise à jour de la synthèse
             document.getElementById('final-score').innerText = score;
             document.getElementById('final-answered').innerText = answeredCount;
-            document.getElementById('total-playlist').innerText = playlistData.length;
+            document.getElementById('total-playlist').innerText = currentPlaylist.length;
         }
 
-        // Au chargement : On mélange toute la playlist et on commence
+        // Au chargement : On ne fait rien de spécial, on attend le clic sur "Lancer"
         window.onload = function() {
-            shuffle(playlistData);
-            loadQuestion();
+            // Le HTML affiche #start-screen par défaut, tout est prêt.
         };
     </script>
 </body>

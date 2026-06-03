@@ -37,12 +37,12 @@
                 const separator = lines[0].includes(';') ? ';' : ',';
                 
                 // Nettoyage des entêtes (enlève les guillemets et espaces)
-                const headers = lines[0].split(separator).map(h => h.trim().replace(/["']/g, "").toLowerCase());
+                const headers = lines[0].split(separator).map(h => h.trim().replace(/["]/g, "").toLowerCase());
 
                 const result = [];
                 for (let i = 1; i < lines.length; i++) {
                     // Gestion basique du split (attention aux virgules dans les titres, privilégiez le point-virgule au besoin)
-                    const currentLine = lines[i].split(separator).map(v => v.trim().replace(/["']/g, ""));
+                    const currentLine = lines[i].split(separator).map(v => v.trim().replace(/["]/g, ""));
                     
                     if (currentLine.length < headers.length) continue;
 

@@ -219,7 +219,7 @@ const playlistData = [
     "participant": "BROSSARD Carine",
     "groupe": "Boulot",
     "type": "Coupable",
-    "chanson": "Elle est dailleurs",
+    "chanson": "Elle est d'ailleurs",
     "artiste": "Pierre Bachelet",
     "lien": "https://music.youtube.com/watch?v=Sko7dU0qJN0"
   },
@@ -259,7 +259,7 @@ const playlistData = [
     "participant": "HAMELIN Sophie",
     "groupe": "Famille",
     "type": "Préférée",
-    "chanson": "The kids arent alright",
+    "chanson": "The kids aren't alright",
     "artiste": "The Offspring",
     "lien": "https://music.youtube.com/watch?v=7iNbnineUCI"
   },
@@ -315,7 +315,7 @@ const playlistData = [
     "participant": "ROESCH Alexis",
     "groupe": "Boulot",
     "type": "Coupable",
-    "chanson": "Loiseau et lenfant",
+    "chanson": "L'oiseau et l'enfant",
     "artiste": "Marie Myriam",
     "lien": "https://music.youtube.com/watch?v=fhwL4bVhSoc"
   },
@@ -347,7 +347,7 @@ const playlistData = [
     "participant": "BARDOU Xavier",
     "groupe": "Volley",
     "type": "Coupable",
-    "chanson": "I Dont Want to Wait (série Dawson)",
+    "chanson": "I Don't Want to Wait (série Dawson)",
     "artiste": "Paula Cole",
     "lien": "https://music.youtube.com/watch?v=dwtjp-v6-8E"
   },
@@ -395,7 +395,7 @@ const playlistData = [
     "participant": "NAMBOT Thierry",
     "groupe": "Boulot",
     "type": "Coupable",
-    "chanson": "Le chasseur (les oies sauvages)",
+    "chanson": "Le chasseur",
     "artiste": "Michel Delpech",
     "lien": "https://music.youtube.com/watch?v=MZqWj1riYvM"
   },
@@ -411,7 +411,7 @@ const playlistData = [
     "participant": "NAMBOT Laurence",
     "groupe": "Boulot",
     "type": "Coupable",
-    "chanson": "Vacances joublie tout",
+    "chanson": "Vacances j'oublie tout",
     "artiste": "Elegance",
     "lien": "https://music.youtube.com/watch?v=mvtbHhTYzcs"
   },
@@ -483,15 +483,15 @@ const playlistData = [
     "participant": "THOLLE Jean-Luc",
     "groupe": "Volley",
     "type": "Préférée",
-    "chanson": "Knockin On Heavens Door",
-    "artiste": "Guns N Roses",
+    "chanson": "Knockin' On Heaven's Door",
+    "artiste": "Guns N' Roses",
     "lien": "https://music.youtube.com/watch?v=mdJzKcfZJNo"
   },
   {
     "participant": "THOLLE Jean-Luc",
     "groupe": "Volley",
     "type": "Coupable",
-    "chanson": "Tout lamour",
+    "chanson": "Tout l'amour",
     "artiste": "Dario Moreno",
     "lien": "https://music.youtube.com/watch?v=WbvISQ5COQI"
   },
@@ -499,7 +499,7 @@ const playlistData = [
     "participant": "BRETAUDEAU Adeline",
     "groupe": "Famille",
     "type": "Préférée",
-    "chanson": "Tu ne mas pas laissé le temps",
+    "chanson": "Tu ne m'as pas laissé le temps",
     "artiste": "David Hallyday",
     "lien": "https://music.youtube.com/watch?v=vZCpEPkalOA"
   },
@@ -523,7 +523,7 @@ const playlistData = [
     "participant": "COUGNAUD Edgar",
     "groupe": "Volley",
     "type": "Coupable",
-    "chanson": "Mais je taime",
+    "chanson": "Mais je t'aime",
     "artiste": "Grand Corps Malade / Camille Lellouche",
     "lien": "https://music.youtube.com/watch?v=7ss-xmvLGFw"
   }

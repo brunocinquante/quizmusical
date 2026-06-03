@@ -73,7 +73,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-slate-400 mb-2">1. Quel est le type de cette chanson ?</label>
+                <label class="block text-sm font-medium text-slate-400 mb-2">1. Quel est le type de cette chanson ? (+1 pt)</label>
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="selectType('Préférée', this)" class="type-btn border border-slate-600 bg-slate-700/50 hover:bg-slate-700 p-3 rounded-xl font-medium transition-all duration-200 text-white cursor-pointer">🌟 Préférée</button>
                     <button onclick="selectType('Coupable', this)" class="type-btn border border-slate-600 bg-slate-700/50 hover:bg-slate-700 p-3 rounded-xl font-medium transition-all duration-200 text-white cursor-pointer">🙈 Coupable</button>
@@ -81,7 +81,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-slate-400 mb-2">2. Qui a donné cette chanson ?</label>
+                <label class="block text-sm font-medium text-slate-400 mb-2">2. Qui a donné cette chanson ? (+2 pts)</label>
                 <select id="suspect-select" class="w-full bg-slate-700 border border-slate-600 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
                 </select>
             </div>
@@ -248,44 +248,58 @@
         }
 
         function validateAnswer() {
-            const currentSong = currentPlaylist[currentIndex];
-            const chosenSuspect = suspectSelect.value;
+			const currentSong = currentPlaylist[currentIndex];
+			const chosenSuspect = suspectSelect.value;
 
-            if (!selectedType || !chosenSuspect) {
-                alert("Il faut répondre aux deux questions !");
-                return;
-            }
+			if (!selectedType || !chosenSuspect) {
+				alert("Il faut répondre aux deux questions !");
+				return;
+			}
 
-            answeredCount++;
-            
-            let pointsGagnes = 0;
-            let message = "";
+			answeredCount++;
+			
+			let pointsGagnes = 0;
+			let message = "";
 
-            const typeCorrect = (selectedType === currentSong.type);
-            const nomCorrect = (chosenSuspect === currentSong.participant);
+			const typeCorrect = (selectedType === currentSong.type);
+			const nomCorrect = (chosenSuspect === currentSong.participant);
 
-            if (typeCorrect && nomCorrect) {
-                pointsGagnes = 3;
-                message = `🎉 Parfait ! (+3 pts)<br>C'est bien un choix "${currentSong.type}" de ${currentSong.participant}.`;
-                feedback.className = "p-3 rounded-xl font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 mt-4";
-            } else if (!typeCorrect && !nomCorrect) {
-                message = `❌ Tout faux...<br>C'était un choix "${currentSong.type}" proposé par ${currentSong.participant}.`;
-                feedback.className = "p-3 rounded-xl font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30 mt-4";
-            } else {
-                pointsGagnes = typeCorrect ? 1 : 2;
-                message = `⚠️ Moitié juste ! (+${pointsGagnes} pt${pointsGagnes > 1 ? 's' : ''})<br>C'était un choix "${currentSong.type}" de ${currentSong.participant}.`;
-                feedback.className = "p-3 rounded-xl font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30 mt-4";
-            }
+			if (typeCorrect && nomCorrect) {
+				pointsGagnes = 3;
+				message = `🎉 Parfait ! (+3 pts)<br>C'est bien un choix "${currentSong.type}" de ${currentSong.participant}.`;
+				feedback.className = "p-3 rounded-xl font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 mt-4";
+			} else if (!typeCorrect && !nomCorrect) {
+				message = `Tout faux...<br>❌ Type incorrect : c'était "${currentSong.type}"<br>❌ Participant incorrect : c'était ${currentSong.participant}`;
+				feedback.className = "p-3 rounded-xl font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30 mt-4";
+			} else {
+				// 🎯 CAS : MOITIÉ JUSTE
+				pointsGagnes = typeCorrect ? 1 : 2;
+				
+				// Configuration de la ligne "Type" (Préférée / Coupable)
+				const typeResult = typeCorrect
+					? `<span class="text-emerald-400">✅ Type correct : "${currentSong.type}"</span>`
+					: `<span class="text-rose-400">❌ Type incorrect : c'était "${currentSong.type}"</span>`;
 
-            score += pointsGagnes;
-            scoreDisplay.innerText = score;
-            feedback.innerHTML = message;
-            
-            // Affichage de la réponse et masquage des actions
-            feedback.classList.remove('hidden');
-            actionButtons.classList.add('hidden');
-            nextButtons.classList.remove('hidden');
-        }
+				// Configuration de la ligne "Participant"
+				const suspectResult = nomCorrect
+					? `<span class="text-emerald-400">✅ Participant correct : ${currentSong.participant}</span>`
+					: `<span class="text-rose-400">❌ Participant incorrect : c'était ${currentSong.participant}</span>`;
+
+				// Assemblage du message final avec un saut de ligne
+				message = `Moitié juste ! (+${pointsGagnes} pt${pointsGagnes > 1 ? 's' : ''})<br><div class="mt-2 text-sm space-y-1">${typeResult}<br>${suspectResult}</div>`;
+				
+				feedback.className = "p-3 rounded-xl font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/20 mt-4";
+			}
+
+			score += pointsGagnes;
+			scoreDisplay.innerText = score;
+			feedback.innerHTML = message;
+			
+			// Affichage de la réponse et masquage des actions
+			feedback.classList.remove('hidden');
+			actionButtons.classList.add('hidden');
+			nextButtons.classList.remove('hidden');
+		}
 
         // --- NOUVEAU : Fonction pour passer à la suivante après lecture du feedback ---
         function nextSong() {

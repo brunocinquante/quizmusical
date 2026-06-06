@@ -526,5 +526,13 @@ const playlistData = [
     "chanson": "Mais je t'aime",
     "artiste": "Grand Corps Malade / Camille Lellouche",
     "lien": "https://music.youtube.com/watch?v=7ss-xmvLGFw"
+  },
+  {
+    "participant": "REDUREAU Jeanine",
+    "groupe": "Famille",
+    "type": "Préférée",
+    "chanson": "Il est où le bonheur",
+    "artiste": "Christophe Maé",
+    "lien": "https://music.youtube.com/watch?v=m5qXr9lLdwA"
   }
 ];

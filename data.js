@@ -534,5 +534,37 @@ const playlistData = [
     "chanson": "Il est où le bonheur",
     "artiste": "Christophe Maé",
     "lien": "https://music.youtube.com/watch?v=m5qXr9lLdwA"
+  },
+  {
+    "participant": "FERDJIOUI Estelle",
+    "groupe": "Volley",
+    "type": "Préférée",
+    "chanson": "Le pouvoir des fleurs",
+    "artiste": "Laurent Voulzy",
+    "lien": "https://music.youtube.com/watch?v=S33slg2-dp8"
+  },
+  {
+    "participant": "FERDJIOUI Estelle",
+    "groupe": "Volley",
+    "type": "Coupable",
+    "chanson": "On écrit sur les murs",
+    "artiste": "Kids United",
+    "lien": "https://music.youtube.com/watch?v=VV5oVYVGfNc"
+  },
+  {
+    "participant": "RICHARD Charly",
+    "groupe": "Famille",
+    "type": "Préférée",
+    "chanson": "Thunderstruck",
+    "artiste": "AC /DC",
+    "lien": "https://music.youtube.com/watch?v=v2AC41dglnM"
+  },
+  {
+    "participant": "RICHARD Charly",
+    "groupe": "Famille",
+    "type": "Coupable",
+    "chanson": "Papaoutai",
+    "artiste": "Stromae",
+    "lien": "https://music.youtube.com/watch?v=oiKj0Z_Xnjc"
   }
 ];

@@ -89,7 +89,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-slate-400 mb-2">2. Qui a donné cette chanson ? (+2 pts)</label>
+                <label class="block text-sm font-medium text-slate-400 mb-2">2. Qui a proposé cette chanson ? (+2 pts)</label>
                 <select id="suspect-select" class="w-full bg-slate-700 border border-slate-600 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
                 </select>
             </div>
@@ -190,10 +190,15 @@
 
             const currentSong = currentPlaylist[currentIndex];
             
-            selectedType = null;
+			selectedType = null;
+            // Réinitialisation complète des boutons de type pour la nouvelle question
             document.querySelectorAll('.type-btn').forEach(btn => {
-                btn.classList.remove('bg-amber-500', 'text-slate-900', 'border-amber-300', 'scale-105', 'shadow-xl');
-                btn.classList.add('text-white');
+                btn.classList.remove(
+                    'bg-amber-500', 'text-slate-900', 'border-amber-300', 'shadow-amber-500/30',
+                    'bg-rose-500', 'text-white', 'border-rose-300', 'shadow-rose-500/30',
+                    'scale-105', 'shadow-xl', 'opacity-50'
+                );
+                btn.classList.add('text-white', 'bg-slate-700/50', 'border-slate-600');
             });
             
             feedback.classList.add('hidden');
@@ -241,13 +246,31 @@
             });
         }
 
-        function selectType(type, element) {
+		function selectType(type, element) {
             selectedType = type;
+            
+            // 1. Réinitialiser tous les boutons (état par défaut)
             document.querySelectorAll('.type-btn').forEach(btn => {
-                btn.classList.remove('bg-amber-500', 'text-slate-900', 'border-amber-300', 'scale-105', 'shadow-xl');
-                btn.classList.add('text-white');
+                btn.classList.remove(
+                    'bg-amber-500', 'text-slate-900', 'border-amber-300', 'shadow-amber-500/30', // Styles Préférée
+                    'bg-rose-500', 'text-white', 'border-rose-300', 'shadow-rose-500/30',      // Styles Coupable
+                    'scale-105', 'shadow-xl', 'opacity-50'                                       // Styles d'état
+                );
+                // Remettre le style par défaut
+                btn.classList.add('text-white', 'bg-slate-700/50', 'border-slate-600');
             });
-            element.classList.add('bg-amber-500', 'text-slate-900', 'border-amber-300', 'scale-105', 'shadow-xl');
+
+            // 2. Griser légèrement les boutons non sélectionnés
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                if(btn !== element) {
+                    btn.classList.add('opacity-50');
+                }
+            });
+
+            // 3. Appliquer le style spécifique au bouton sélectionné
+            // On enlève d'abord les styles par défaut pour éviter les conflits
+            element.classList.remove('bg-slate-700/50', 'border-slate-600', 'text-white', 'opacity-50');
+            element.classList.add('text-white', 'border-amber-300', 'scale-105', 'shadow-xl', 'shadow-amber-500/30');
         }
 
         function validateAnswer() {
@@ -268,7 +291,7 @@
 
             if (typeCorrect && nomCorrect) {
                 pointsGagnes = 3;
-                message = `🎉 Parfait ! (+3 pts)<br>C'est bien un choix "${currentSong.type}" de ${currentSong.participant}.`;
+                message = `🎉 Parfait ! (+3 pts)<br>C'est bien un choix "${currentSong.type}"<br>Proposé par ${currentSong.participant}.`;
                 feedback.className = "p-3 rounded-xl font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 mt-4";
             } else if (!typeCorrect && !nomCorrect) {
                 message = `Tout faux...<br>❌ Type : c'était "${currentSong.type}"<br>❌ Participant : c'était ${currentSong.participant}`;

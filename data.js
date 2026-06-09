@@ -566,5 +566,37 @@ const playlistData = [
     "chanson": "Papaoutai",
     "artiste": "Stromae",
     "lien": "https://music.youtube.com/watch?v=oiKj0Z_Xnjc"
+  },
+  {
+    "participant": "GONNORD Amélie",
+    "groupe": "Famille",
+    "type": "Préférée",
+    "chanson": "Happy",
+    "artiste": "Pharrel Williams",
+    "lien": "https://music.youtube.com/watch?v=ZbZSe6N_BXs"
+  },
+  {
+    "participant": "GONNORD Amélie",
+    "groupe": "Famille",
+    "type": "Coupable",
+    "chanson": "J'irai où tu iras",
+    "artiste": "Céline Dion",
+    "lien": "https://music.youtube.com/watch?v=lsCtPfZ5UbA"
+  },
+  {
+    "participant": "GONNORD Raphaël",
+    "groupe": "Famille",
+    "type": "Préférée",
+    "chanson": "Over the rainbow",
+    "artiste": "Israel Kamakawiwo'ole",
+    "lien": "https://music.youtube.com/watch?v=V1bFr2SWP1I"
+  },
+  {
+    "participant": "GONNORD Raphaël",
+    "groupe": "Famille",
+    "type": "Coupable",
+    "chanson": "Les sardines",
+    "artiste": "Patrick Sébastien",
+    "lien": "https://music.youtube.com/watch?v=mNYlzaoQ7Tg"
   }
 ];

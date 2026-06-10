@@ -7,14 +7,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         /* Couleurs personnalisées pour les groupes (Menu de départ) */
-        .group-famille { border-left: 4px solid #ef4444 !important; }
-        .group-boulot { border-left: 4px solid #22c55e !important; }
-        .group-volley { border-left: 4px solid #3b82f6 !important; }
+        .group-famille { border-left: 4px solid #ef4444 !important; border-right: 4px solid #ef4444 !important;}
+        .group-volley { border-left: 4px solid #22c55e !important; border-right: 4px solid #22c55e !important;}
+        .group-boulot { border-left: 4px solid #3b82f6 !important; border-right: 4px solid #3b82f6 !important;}
         
         /* Badges (Quiz) : Fond transparent, texte et bordure colorés */
         .badge-famille { background-color: transparent; color: #ef4444; border: 1px solid #ef4444; }
-        .badge-boulot { background-color: transparent; color: #22c55e; border: 1px solid #22c55e; }
-        .badge-volley { background-color: transparent; color: #3b82f6; border: 1px solid #3b82f6; }
+        .badge-volley { background-color: transparent; color: #22c55e; border: 1px solid #22c55e; }
+        .badge-boulot { background-color: transparent; color: #3b82f6; border: 1px solid #3b82f6; }
     </style>
 </head>
 <body class="bg-slate-900 text-white font-sans min-h-screen flex flex-col items-center justify-center p-4">
@@ -33,11 +33,11 @@
                     <span class="text-white font-medium">Famille</span>
                 </label>
                 <label class="group-boulot flex items-center space-x-3 bg-slate-700/50 p-3 rounded-xl cursor-pointer hover:bg-slate-700 transition">
-                    <input type="checkbox" value="Boulot" class="group-cb w-5 h-5 accent-green-500" checked>
+                    <input type="checkbox" value="Boulot" class="group-cb w-5 h-5 accent-blue-500" checked>
                     <span class="text-white font-medium">Boulot</span>
                 </label>
                 <label class="group-volley flex items-center space-x-3 bg-slate-700/50 p-3 rounded-xl cursor-pointer hover:bg-slate-700 transition">
-                    <input type="checkbox" value="Volley" class="group-cb w-5 h-5 accent-blue-500" checked>
+                    <input type="checkbox" value="Volley" class="group-cb w-5 h-5 accent-green-500" checked>
                     <span class="text-white font-medium">Volley</span>
                 </label>
             </div>

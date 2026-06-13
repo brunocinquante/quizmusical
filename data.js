@@ -604,8 +604,8 @@ const playlistData = [
     "groupe": "Volley",
     "type": "Préférée",
     "chanson": "Je l'aime à mourir",
-    "artiste": "Francis Cabrel",
-    "lien": "https://music.youtube.com/watch?v=wEsOEtQUHB0"
+    "artiste": "Shakira",
+    "lien": "https://music.youtube.com/watch?v=R6gHxLmHtIo"
   },
   {
     "participant": "MALLASSAGNE Christophe",

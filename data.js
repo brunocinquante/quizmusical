@@ -598,5 +598,93 @@ const playlistData = [
     "chanson": "Les sardines",
     "artiste": "Patrick Sébastien",
     "lien": "https://music.youtube.com/watch?v=mNYlzaoQ7Tg"
+  },
+  {
+    "participant": "MALLASSAGNE Christophe",
+    "groupe": "Volley",
+    "type": "Préférée",
+    "chanson": "Je l'aime à mourir",
+    "artiste": "Francis Cabrel",
+    "lien": "https://music.youtube.com/watch?v=wEsOEtQUHB0"
+  },
+  {
+    "participant": "MALLASSAGNE Christophe",
+    "groupe": "Volley",
+    "type": "Coupable",
+    "chanson": "Les corons",
+    "artiste": "Pierre Bachelet",
+    "lien": "https://music.youtube.com/watch?v=r3b5W9WOy2U"
+  },
+  {
+    "participant": "MALLASSAGNE Maria",
+    "groupe": "Volley",
+    "type": "Préférée",
+    "chanson": "Shallow",
+    "artiste": "Lady Gaga, Bradley Cooper",
+    "lien": "https://music.youtube.com/watch?v=bo_efYhYU2A"
+  },
+  {
+    "participant": "MALLASSAGNE Maria",
+    "groupe": "Volley",
+    "type": "Coupable",
+    "chanson": "Despacito",
+    "artiste": "Luis Fonsi",
+    "lien": "https://music.youtube.com/watch?v=kJQP7kiw5Fk"
+  },
+  {
+    "participant": "LEBERT Gaël",
+    "groupe": "Volley",
+    "type": "Préférée",
+    "chanson": "Le chasseur",
+    "artiste": "Michel Delpech",
+    "lien": "https://music.youtube.com/watch?v=MZqWj1riYvM"
+  },
+  {
+    "participant": "LEBERT Gaël",
+    "groupe": "Volley",
+    "type": "Coupable",
+    "chanson": "Une autre histoire",
+    "artiste": "Gérard Blanc",
+    "lien": "https://music.youtube.com/watch?v=zcG4rTyhPNI"
+  },
+  {
+    "participant": "ROUSSEAU Mathieu",
+    "groupe": "Famille",
+    "type": "Préférée",
+    "chanson": "Up From th Bottom",
+    "artiste": "Linkin Park",
+    "lien": "https://music.youtube.com/watch?v=97Mj6pXYMd8"
+  },
+  {
+    "participant": "ROUSSEAU Huguette",
+    "groupe": "Famille",
+    "type": "Préférée",
+    "chanson": "Ameno",
+    "artiste": "Vincent Niclo",
+    "lien": "https://music.youtube.com/watch?v=lWOJ9WJlaxE"
+  },
+  {
+    "participant": "ROUSSEAU Huguette",
+    "groupe": "Famille",
+    "type": "Coupable",
+    "chanson": "Comme un boomerang",
+    "artiste": "Etienne Daho",
+    "lien": "https://music.youtube.com/watch?v=O3XRYl5XYdo"
+  },
+  {
+    "participant": "ROUSSEAU Marcel",
+    "groupe": "Famille",
+    "type": "Préférée",
+    "chanson": "Regarde les riches",
+    "artiste": "Patricia Kass",
+    "lien": "https://music.youtube.com/watch?v=eed09JACrjs"
+  },
+  {
+    "participant": "ROUSSEAU Marcel",
+    "groupe": "Famille",
+    "type": "Coupable",
+    "chanson": "Formidable",
+    "artiste": "Stromae",
+    "lien": "https://music.youtube.com/watch?v=S_xH7noaqTA"
   }
 ];
